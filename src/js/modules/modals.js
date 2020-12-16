@@ -3,7 +3,9 @@
 
 const modals = () => {
 
-    function bindModal(triggerSelector, modalSelector, closeSelector, closeClickOverlay = true) { // триггер - кнопка; само модальное окно и триггер для его закрытия
+    let btnPressed = false;
+
+    function bindModal(triggerSelector, modalSelector, closeSelector, destroy = false) { // триггер - кнопка; само модальное окно и триггер для его закрытия
 
         const trigger = document.querySelectorAll(triggerSelector);
         const modal = document.querySelector(modalSelector);
@@ -17,6 +19,12 @@ const modals = () => {
             item.addEventListener('click', (e) => {
                 if (e.target){
                     e.preventDefault();
+                }
+
+                btnPressed = true;
+
+                if (destroy){
+                    item.remove();
                 }
 
                 // закрытие всех открытых модальных окон на странице
@@ -48,7 +56,7 @@ const modals = () => {
 
         modal.addEventListener('click', (e) => {
 
-            if (e.target === modal && closeClickOverlay){
+            if (e.target === modal){
 
                 // закрытие всех открытых модальных окон на странице
                 openWindows.forEach(item => {
@@ -80,6 +88,9 @@ const modals = () => {
             if (!display){
                 document.querySelector(selector).style.display = 'block';
                 document.body.style.overflow = 'hidden';
+
+                const scroll = smoothModalSwitcher();
+                document.body.style.marginRight = `${scroll}px`;
             }
 
         }, time)
@@ -101,11 +112,25 @@ const modals = () => {
         return scrollWidth;
     }
 
+    // определяем, есть ли клики во время пролистывания страницы
+
+    function openByScroll(selector){   // selector - в данном случае .fixed-gift
+
+        window.addEventListener('scroll', () => {
+            if(!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)){
+                document.querySelector(selector).click();
+            }
+        })
+    }
+
 
     bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
     bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close');
+    bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
 
-    showModalByTime('.popup-consultation', 5000);
+    openByScroll('.fixed-gift');
+
+    // showModalByTime('.popup-consultation', 5000);
 
 
 

@@ -959,8 +959,10 @@ __webpack_require__.r(__webpack_exports__);
 
 // функция для всех модальных окон
 var modals = function modals() {
+  var btnPressed = false;
+
   function bindModal(triggerSelector, modalSelector, closeSelector) {
-    var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var destroy = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     // триггер - кнопка; само модальное окно и триггер для его закрытия
     var trigger = document.querySelectorAll(triggerSelector);
     var modal = document.querySelector(modalSelector);
@@ -971,6 +973,12 @@ var modals = function modals() {
       item.addEventListener('click', function (e) {
         if (e.target) {
           e.preventDefault();
+        }
+
+        btnPressed = true;
+
+        if (destroy) {
+          item.remove();
         } // закрытие всех открытых модальных окон на странице
 
 
@@ -993,7 +1001,7 @@ var modals = function modals() {
       document.body.style.marginRight = '0px';
     });
     modal.addEventListener('click', function (e) {
-      if (e.target === modal && closeClickOverlay) {
+      if (e.target === modal) {
         // закрытие всех открытых модальных окон на странице
         openWindows.forEach(function (item) {
           item.style.display = 'none';
@@ -1017,6 +1025,8 @@ var modals = function modals() {
       if (!display) {
         document.querySelector(selector).style.display = 'block';
         document.body.style.overflow = 'hidden';
+        var scroll = smoothModalSwitcher();
+        document.body.style.marginRight = "".concat(scroll, "px");
       }
     }, time);
   }
@@ -1033,11 +1043,22 @@ var modals = function modals() {
     div.remove(); //
 
     return scrollWidth;
+  } // определяем, есть ли клики во время пролистывания страницы
+
+
+  function openByScroll(selector) {
+    // selector - в данном случае .fixed-gift
+    window.addEventListener('scroll', function () {
+      if (!btnPressed && window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+        document.querySelector(selector).click();
+      }
+    });
   }
 
   bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
   bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close');
-  showModalByTime('.popup-consultation', 5000);
+  bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
+  openByScroll('.fixed-gift'); // showModalByTime('.popup-consultation', 5000);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
