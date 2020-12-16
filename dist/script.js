@@ -984,6 +984,7 @@ var modals = function modals() {
 
         openWindows.forEach(function (item) {
           item.style.display = 'none';
+          item.classList.add('animated', 'fadeIn');
         });
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden'; // при открытом модальном окне страница сайта будет замораживаться
@@ -1049,7 +1050,10 @@ var modals = function modals() {
   function openByScroll(selector) {
     // selector - в данном случае .fixed-gift
     window.addEventListener('scroll', function () {
-      if (!btnPressed && window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+      // для корректного отображения в старых версиях
+      var scrollHeight = Math.max(document.documentElement.clientHeight, document.body.clientHeight);
+
+      if (!btnPressed && window.pageYOffset + document.documentElement.clientHeight >= scrollHeight) {
         document.querySelector(selector).click();
       }
     });

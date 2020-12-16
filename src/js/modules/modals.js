@@ -30,6 +30,7 @@ const modals = () => {
                 // закрытие всех открытых модальных окон на странице
                 openWindows.forEach(item => {
                     item.style.display = 'none';
+                    item.classList.add('animated', 'fadeIn');
                 });
 
                 modal.style.display = 'block';
@@ -117,7 +118,11 @@ const modals = () => {
     function openByScroll(selector){   // selector - в данном случае .fixed-gift
 
         window.addEventListener('scroll', () => {
-            if(!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)){
+            // для корректного отображения в старых версиях
+
+            let scrollHeight = Math.max(document.documentElement.clientHeight, document.body.clientHeight);
+
+            if(!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= scrollHeight)){
                 document.querySelector(selector).click();
             }
         })
