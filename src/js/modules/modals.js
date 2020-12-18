@@ -3,9 +3,9 @@
 
 const modals = () => {
 
-    let btnPressed = false;
+    let btnPressed = false;  //переопределение значения в стр 24
 
-    function bindModal(triggerSelector, modalSelector, closeSelector, destroy = false) { // триггер - кнопка; само модальное окно и триггер для его закрытия
+    function bindModal(triggerSelector, modalSelector, closeSelector, destroy = false) {
 
         const trigger = document.querySelectorAll(triggerSelector);
         const modal = document.querySelector(modalSelector);
@@ -120,9 +120,9 @@ const modals = () => {
         window.addEventListener('scroll', () => {
             // для корректного отображения в старых версиях
 
-            let scrollHeight = Math.max(document.documentElement.clientHeight, document.body.clientHeight);
+            let scrollHeight = Math.max(document.documentElement.clientHeight, document.body.clientHeight); // document.documentElement = html
 
-            if(!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= scrollHeight)){
+            if(!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= scrollHeight)){ // pageYOffset - сколько сверху уже прокручено
                 document.querySelector(selector).click();
             }
         })
