@@ -1,7 +1,8 @@
 
 
 const sliders = (slides, dir, prev, next) => {  // slides - селектор для всех слайдов, dir - направление слайдераб prev/next - кнопки переключения
-    let slideIndex = 1;  // текущий слайд, кот виден пользователю
+    let slideIndex = 1;              // текущий слайд, кот виден пользователю
+    let paused = false;             // отвечает за остановку авто-переключения слайдера
     const items = document.querySelectorAll(slides);
 
     function showSlides(n) {  // n - количество items
@@ -50,7 +51,33 @@ const sliders = (slides, dir, prev, next) => {  // slides - селектор д�
         })
 
     } catch (e){}
+    
 
+    function activateAnimation() {
+        //  условие для авто переключения и направления слайдера
+        if (dir === 'vertical'){
+            paused = setInterval(()  => {
+                changeSlides(1);
+                items[slideIndex - 1].classList.add('zoomIn');
+            }, 3000)    // интервал такжe можно передавать как аргумент функции
+        } else {
+            paused = setInterval(() => {
+                changeSlides(1);
+                items[slideIndex - 1].classList.remove('slideInRight');
+                items[slideIndex - 1].classList.add('slideInLeft');
+            }, 3000);
+        }
+    }
+
+    activateAnimation();
+
+    // отключениe авто-переключения слайдера
+    items[0].parentNode.addEventListener('mouseenter', () => {
+        clearInterval(paused);
+    });
+    items[0].parentNode.addEventListener('mouseleave', () => {
+        activateAnimation();
+    });
 
 };
 

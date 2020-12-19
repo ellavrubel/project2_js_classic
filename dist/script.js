@@ -943,6 +943,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])();
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_2__["default"])('.feedback-slider-item', '', '.main-prev-btn', '.main-next-btn');
+  Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_2__["default"])('.main-slider-item', 'vertical');
 });
 
 /***/ }),
@@ -1089,6 +1090,8 @@ var sliders = function sliders(slides, dir, prev, next) {
   // slides - селектор для всех слайдов, dir - направление слайдераб prev/next - кнопки переключения
   var slideIndex = 1; // текущий слайд, кот виден пользователю
 
+  var paused = false; // отвечает за остановку авто-переключения слайдера
+
   var items = document.querySelectorAll(slides);
 
   function showSlides(n) {
@@ -1134,6 +1137,31 @@ var sliders = function sliders(slides, dir, prev, next) {
       items[slideIndex - 1].classList.add('slideInLeft');
     });
   } catch (e) {}
+
+  function activateAnimation() {
+    //  условие для авто переключения и направления слайдера
+    if (dir === 'vertical') {
+      paused = setInterval(function () {
+        changeSlides(1);
+        items[slideIndex - 1].classList.add('zoomIn');
+      }, 3000); // интервал такжe можно передавать как аргумент функции
+    } else {
+      paused = setInterval(function () {
+        changeSlides(1);
+        items[slideIndex - 1].classList.remove('slideInRight');
+        items[slideIndex - 1].classList.add('slideInLeft');
+      }, 3000);
+    }
+  }
+
+  activateAnimation(); // отключениe авто-переключения слайдера
+
+  items[0].parentNode.addEventListener('mouseenter', function () {
+    clearInterval(paused);
+  });
+  items[0].parentNode.addEventListener('mouseleave', function () {
+    activateAnimation();
+  });
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (sliders);
